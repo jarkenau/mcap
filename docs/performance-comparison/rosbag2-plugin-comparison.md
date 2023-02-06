@@ -150,20 +150,20 @@ Given the above results, we feel comfortable recommending MCAP as a replacement 
 
 Clone this branch into a ROS 2 workspace:
 
-```
-$ git clone -b plugin-comparison https://github.com/james-rms/rosbag2
-```
-
-Install dependencies:
-
-```
-$ rosdep install rosbag2_storage_plugin_comparison
+```bash
+git clone -b plugin-comparison https://github.com/james-rms/rosbag2
 ```
 
-build the test binaries:
+Install dependencies (you need to be in the parent dir of `src`):
 
+```bash
+rosdep install --from-paths src -y --ignore-src 
 ```
-$ colcon build --packages-select rosbag2_storage_plugin_comparison
+
+Build the test binaries:
+
+```bash
+colcon build --packages-select rosbag2_storage_plugin_comparison --packages-ignore shared_queues_vendor sqlite3_vendor rosbag2_storage rosbag2_storage_default_plugins rosbag2_cpp rosbag2_compression
 ```
 
 Find some sample data to use as message content for the tests. A simple enough option is to download some [public bag data](https://google-cartographer-ros.readthedocs.io/en/latest/data.html) and use that as your source of data. To ensure that any downloaded bags are uncompressed, you can use the [mcap CLI](https://github.com/foxglove/mcap/tree/main/go/cli/mcap):
@@ -175,12 +175,12 @@ mcap convert --compression none <input bag> sample.mcap
 Launch the benchmark sweep.
 
 ```
-$ ros2 run rosbag2_storage_plugin_comparison sweep.py --message-data sample.mcap output.csv
+ros2 run rosbag2_storage_plugin_comparison sweep.py --message-data sample.mcap output.csv
 ```
 
 To produce bar charts like the ones on this page, use the `plot.py` script included:
 
 ```
-$ pip install matplotlib numpy pandas
-$ python3 rosbag2/rosbag2_performance/rosbag2_storage_plugin_comparison/scripts/plot.py output.csv
+pip install matplotlib numpy pandas
+python3 src/rosbag2/rosbag2_performance/rosbag2_storage_plugin_comparison/scripts/plot.py output.csv
 ```
